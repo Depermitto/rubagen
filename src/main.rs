@@ -1,24 +1,27 @@
 use bmp::{Image, consts::WHITE};
+use inquire::{Text, formatter::StringFormatter};
+
 use data::CODES;
-use std::io::stdin;
 mod data;
 
 fn main() {
-    // Get the text to encode
-    let mut input= String::from("*");
-    println!("Text: ");
-    stdin()
-        .read_line(&mut input)
-        .expect("Could not read from user input");
+    let formatter: StringFormatter = &|s| {
+        format!("*{}*", s.trim().to_uppercase())
+    };
 
-    let input = input.trim().to_uppercase() + "*";
+    // Get the text to encode
+    let input = Text::new("Text to encode: ")
+        .with_formatter(formatter)
+        .with_default("Example")
+        .prompt()
+        .unwrap();
+    let input = formatter(&input);
 
     // Get scale of the barcode
-    let mut scale = String::new();
-    println!("\n(1 means 18 px height and 1px thin lines)\nScale: ");
-    stdin()
-        .read_line(&mut scale)
-        .expect("Could not read from user input");
+    let scale = Text::new("Scale: ")
+        .with_default("1")
+        .prompt()
+        .unwrap();
 
     // Set up image dimensions
     let scale: u32 = scale.trim().parse().unwrap(); // Get the string value
