@@ -1,8 +1,11 @@
-use bmp::{Image, consts::WHITE};
+use bmp::Image;
 use inquire::{Text, formatter::StringFormatter};
 
-use data::CODES;
+mod ops;
 mod data;
+
+use ops::Code39Gen;
+
 
 fn main() {
     let formatter: StringFormatter = &|s| {
@@ -28,33 +31,9 @@ fn main() {
     let height = scale * 16; // Set height
     let width = scale * input.len() as u32 * 13; // Set width to input width * 13
 
-    // Image stats
+    // Generate the image
     let mut img = Image::new(width, height);
-    let mut x: u32 = 0;
-    let mut y: u32 = 0;
-    let mut white: bool = false;
-
-    for ch in input.chars() {
-        // This loop codes a single character [ch] from input
-        // with a 1px wide white line after
-        for mut thickness in CODES[&ch] {
-            // Repeat [thickness] times
-            thickness *= scale as usize;
-            while thickness != 0 {
-                // Paint vertical line white
-                while white && y < height {
-                    img.set_pixel(x, y, WHITE);
-                    y += 1;
-                }
-                // Next line
-                y = 0;
-                x += 1;
-                thickness -= 1;
-            }
-            // Switch colors
-            white = !white;
-        }
-    }
+    img.code39_gen(&input, scale as usize);
 
     img.save("result.bmp").expect("Couldn't save file");
 }
