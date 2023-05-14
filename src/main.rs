@@ -5,18 +5,20 @@ mod data;
 
 fn main() {
     // Get the text to encode
-    let mut input= String::new();
+    let mut input= String::from("*");
     println!("Text: ");
     stdin()
         .read_line(&mut input)
         .expect("Could not read from user input");
 
-    let input = input.trim().to_uppercase();
+    let input = input.trim().to_uppercase() + "*";
 
     // Get scale of the barcode
-    let mut scale = String::from("1");
+    let mut scale = String::new();
     println!("\n(1 means 18 px height and 1px thin lines)\nScale: ");
-    stdin().read_line(&mut scale).expect("Could not read from user input");
+    stdin()
+        .read_line(&mut scale)
+        .expect("Could not read from user input");
 
     // Set up image dimensions
     let scale: u32 = scale.trim().parse().unwrap(); // Get the string value
