@@ -20,20 +20,13 @@ fn main() {
         .unwrap();
     let input = formatter(&input);
 
-    // Get scale of the barcode
-    let scale = Text::new("Scale: ")
-        .with_default("1")
-        .prompt()
-        .unwrap();
-
     // Set up image dimensions
-    let scale: u32 = scale.trim().parse().unwrap(); // Get the string value
-    let height = scale * 16; // Set height
-    let width = scale * input.len() as u32 * 13; // Set width to input width * 13
+    let width = input.len() as u32 * 13; // Set width to input width * 13
+    let height = 16; // Set height
 
     // Generate the image
     let mut img = Image::new(width, height);
-    img.code39_gen(&input, scale as usize);
+    img.code39_gen(&input);
 
     img.save("result.bmp").expect("Couldn't save file");
 }
