@@ -1,12 +1,13 @@
 use bmp::{Image, consts::WHITE};
 use crate::data::CODES;
 
-pub trait Code39Gen {
-    fn code39_gen(&mut self, input: &str, scale: usize) -> Image;
+pub trait BarcodeGen {
+    fn code39_gen(&mut self, input: &str, scale: usize) -> Self;
+    // fn code128_gen(&mut self, input: &str, scale: T) -> Self;
 }
 
-impl Code39Gen for Image {
-    fn code39_gen(&mut self, input: &str, scale: usize) -> Image {
+impl BarcodeGen for Image {
+    fn code39_gen(&mut self, input: &str, scale: usize) -> Self {
         // Image stats
         let mut x: u32 = 0;
         let mut y: u32 = 0;
@@ -16,7 +17,7 @@ impl Code39Gen for Image {
             // This loop codes a single character [ch] from input
             // with a 1px wide white line after
             for mut thickness in CODES[&ch] {
-                // Repeat [thickness] times
+                // Repeat [thickness] time
                 thickness *= scale;
                 while thickness != 0 {
                     // Paint vertical line white

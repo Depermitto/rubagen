@@ -4,7 +4,7 @@ use inquire::{Text, formatter::StringFormatter};
 mod ops;
 mod data;
 
-use ops::Code39Gen;
+use ops::BarcodeGen;
 
 
 fn main() {
