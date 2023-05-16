@@ -5,11 +5,11 @@ use crate::{
 };
 
 pub trait BarcodeGen {
-    /// Modifies `Self` with an encoded `input` using
+    /// Modifies `Self` with an encoded \[`input`] using
     /// [Code 39](https://en.wikipedia.org/wiki/Code_39).
     ///
-    /// Returns Ok(`Self`) if the operation was a success,
-    /// otherwise Err(`BarcodeError`)
+    /// Returns `Ok(())` if the operation was a success,
+    /// otherwise `Err(BarcodeError)`
     ///
     /// # Example
     ///
@@ -18,16 +18,15 @@ pub trait BarcodeGen {
     /// let mut img = Image::new(width, height);
     /// img.code39_gen("*PINEAPPLE*");
     /// ```
-    fn code39_gen(&mut self, input: &str) -> Result<Self, BarcodeError> where Self: Sized;
+    fn code39_gen(&mut self, input: &str) -> Result<(), BarcodeError> where Self: Sized;
     // fn code39_read(path: &str) -> String;
     // fn code128_gen(&mut self, input: &str, scale: T) -> Self;
 }
 
 impl BarcodeGen for Image {
-    fn code39_gen(&mut self, input: &str) -> Result<Self, BarcodeError> {
+    fn code39_gen(&mut self, input: &str) -> Result<(), BarcodeError> {
         // Image stats
         let mut x: u32 = 0;
-        let mut y: u32 = 0;
         let mut white: bool = false;
 
         // This loop codes a single character [ch] from input
@@ -40,23 +39,22 @@ impl BarcodeGen for Image {
             };
 
             for thickness in code {
-                // Repeat [thickness] time
-                for _ in 0..thickness {
-                    // Paint vertical line white
-                    while white && y < self.get_height() {
-                        self.set_pixel(x, y, WHITE);
-                        y += 1;
+                if white {
+                    // Repeat [thickness] times
+                    for i in 0..thickness {
+                        // Paint a single vertical line white
+                        for y in 0..self.get_height() {
+                            self.set_pixel(x + i, y, WHITE);
+                        }
                     }
-                    // Next line
-                    y = 0;
-                    x += 1;
                 }
+                x += thickness;
                 // Switch colors
                 white = !white;
             }
         }
 
-        Ok(self.clone())
+        Ok(())
     }
 
     // fn code39_read(path: &str) -> String {
